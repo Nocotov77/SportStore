@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using SportStore.Models;
 
 namespace SportStore
 {
@@ -26,8 +27,21 @@ namespace SportStore
 
         private void loginButton_Click(object sender, RoutedEventArgs e)
         {
-            new MainWindow().Show();
-            this.Close();
+            using (SportStoreContext db = new SportStoreContext())
+            {
+                User user = db.Users.Where(u => u.Login == loginBox.Text && u.Password == passwordBox.Password).FirstOrDefault() as User;
+
+                // admin
+                if (user != null)
+                {
+                    new MainWindow().Show();
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Неуспешная авторизация");
+                }
+            }
         }
     }
 }
